@@ -5,9 +5,13 @@ on:
   pull_request:
     branches: [ main, master ]
 
+permissions:
+  checks: write
+  contents: read
+
 jobs:
   test:
-    runs-on: windows-latest  # Usando Windows
+    runs-on: windows-latest
     
     steps:
     - uses: actions/checkout@v3
@@ -31,8 +35,11 @@ jobs:
     - name: Generar reporte de cobertura
       run: mvn jacoco:report
     
+    - name: Verificar reportes
+      run: dir target\surefire-reports\
+    
     - name: Publicar resultados de pruebas
-      uses: dorny/test-reporter@v1
+      uses: dorny/test-reporter@v1.13.1
       if: success() || failure()
       with:
         name: Maven Tests
